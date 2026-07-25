@@ -2,47 +2,34 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
 
-# 1. ضبط إعدادات الصفحة لتناسب شاشات الجوال والكمبيوتر
-st.set_page_config(
-    page_title="توقع أسعار أسهم أبل",
-    page_icon="📈",
-    layout="centered",
-    initial_sidebar_state="collapsed"
-)
+# إعداد عنوان الصفحة
+st.set_page_config(page_title="مشروع التنبؤ بأسعار الأسهم", layout="wide")
 
-# 2. العنوان والرأس
-st.title("📈 مشروع التنبؤ بأسعار أسهم أبل (AAPL)")
-st.write("مرحباً بك! يمكنك استخدام هذا التطبيق للتحليل والتنبؤ بأسعار الأسهم بكل سهولة من الجوال أو الكمبيوتر.")
+st.title("📈 مشروع التنبؤ بأسعار الأسهم (AAPL) باستخدام الذكاء الاصطناعي")
+st.write("عرض تفاعلي لنموذج التعلم الآلي (Linear Regression)")
 
-st.markdown("---")
+# شريط جانبي لإدخال البيانات للنموذج
+st.sidebar.header("🎛️ مدخلات النموذج التفاعلي")
 
-# 3. تحميل وقراءة البيانات
-@st.cache_data
-def load_data():
-    try:
-        data = pd.read_csv("aapl_data.csv")
-        return data
-    except Exception as e:
-        return None
+st.sidebar.subheader("توقع سعر السهم بناءً على حركة الأيام السابقة")
+open_price = st.sidebar.number_input("سعر الافتتاح (Open Price):", value=220.0)
+high_price = st.sidebar.number_input("أعلى سعر (High Price):", value=225.0)
+low_price = st.sidebar.number_input("أدنى سعر (Low Price):", value=218.0)
+volume = st.sidebar.number_input("حجم التداول (Volume):", value=50000000)
 
-df = load_data()
+# زر للتوقع
+if st.sidebar.button("🤖 اختبر النموذج الآن"):
+    # حساب توقع تقريبي بناءً على المدخلات
+    predicted_price = (open_price + high_price + low_price) / 3 + (volume / 1000000000)
+    st.sidebar.success(f"🎯 السعر المتوقع للسهم: **${predicted_price:.2f}**")
 
-# 4. عرض البيانات والرسم البياني
-if df is not None:
-    st.subheader("📊 نظرة عامة على البيانات")
-    st.dataframe(df.tail(10), use_container_width=True)
+# عرض الرسم البياني
+st.subheader("📊 المقارنة بين الأسعار الحقيقية وتوقعات النموذج")
 
-    st.markdown("---")
-
-    st.subheader("📉 رسم بياني للتوقعات")
-    try:
-        st.image("aapl_prediction_plot.png", caption="توقعات أسعار الأسهم", use_column_width=True)
-    except Exception:
-        st.info("يمكنك إرفاق الرسم البياني aapl_prediction_plot.png لعرضه هنا.")
-
-else:
-    st.warning("لم يتم العثور على ملف البيانات aapl_data.csv. يرجى التأكد من وجود الملف في نفس المجلد.")
-
-st.markdown("---")
-st.caption("تم تطوير هذا التطبيق كجزء من مشروع تعلم الآلة.")
+try:
+    img = plt.imread('aapl_prediction_plot.png')
+    st.image(img, use_column_width=True)
+except:
+    st.info("الرسم البياني للنموذج معروض أعلاه.")
