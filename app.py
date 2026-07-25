@@ -30,6 +30,6 @@ st.subheader("📊 المقارنة بين الأسعار الحقيقية وت�
 
 try:
     img = plt.imread('aapl_prediction_plot.png')
-    st.image(img, use_column_width=True)
+    st.image(img, use_container_width=True
 except:
     st.info("الرسم البياني للنموذج معروض أعلاه.")
